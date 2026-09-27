@@ -1,0 +1,38 @@
+# Local stack: MongoDB + API.  Usage:
+#   docker compose up -d --build
+#   docker compose exec api node dist/scripts/seed.js
+services:
+  mongo:
+    image: mongo:8
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      retries: 5
+
+  api:
+    build: ./backend
+    depends_on:
+      mongo:
+        condition: service_healthy
+    ports:
+      - "4000:4000"
+    environment:
+      # Dev-oriented defaults so the demo works out of the box; change secrets for any real deployment.
+      NODE_ENV: development
+      PORT: 4000
+      MONGODB_URI: mongodb://mongo:27017/feedants
+      JWT_SECRET: local-docker-secret-change-me
+      ENABLE_DEV_LOGIN: "true"
+      PAYMENT_PROVIDER: mock
+      PAYMENT_WEBHOOK_SECRET: local-docker-payment-secret
+      SEAT_HOLD_MINUTES: 10
+    volumes:
+      - uploads:/app/uploads
+
+volumes:
+  mongo-data:
+  uploads:

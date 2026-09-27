@@ -1,0 +1,17 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Env files
+.env
+.env.local
+
+# Assignment brief & design reference (not redistributed)
+*.pdf
+Objective_Page.png
+
+# Local AI-assistant config
+CLAUDE.md
+.claude/
